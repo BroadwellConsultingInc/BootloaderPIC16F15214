@@ -438,11 +438,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\keep\\GitHub\\PIC16F15214Bootloader\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp.csproj",
+      "projectUniqueName": "F:\\keep\\GitHub\\PIC16F15214Bootloader\\BootloaderPIC16F15214\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp.csproj",
       "projectName": "PIC16F15214BootloaderApp",
-      "projectPath": "F:\\keep\\GitHub\\PIC16F15214Bootloader\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp.csproj",
+      "projectPath": "F:\\keep\\GitHub\\PIC16F15214Bootloader\\BootloaderPIC16F15214\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp.csproj",
       "packagesPath": "C:\\Users\\JAB\\.nuget\\packages\\",
-      "outputPath": "F:\\keep\\GitHub\\PIC16F15214Bootloader\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp\\obj\\",
+      "outputPath": "F:\\keep\\GitHub\\PIC16F15214Bootloader\\BootloaderPIC16F15214\\PIC16F15214BootloaderApp\\PIC16F15214BootloaderApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
