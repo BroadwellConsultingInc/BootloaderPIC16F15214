@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+//Latest version can be found at:
+//https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214
+
 // The main program implements a bootloader that runs without 
 // interrupts.  It was developed on MPLAB X v5.40 and XC8
 // v2.30 running in free mode, optimization level 2.
