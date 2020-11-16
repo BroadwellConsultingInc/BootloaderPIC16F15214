@@ -27,7 +27,11 @@ SOFTWARE.
 
 // The main program implements a bootloader that runs without 
 // interrupts.  It was developed on MPLAB X v5.40 and XC8
-// v2.30 running in free mode, optimization level 2.
+// v2.31 running in PRO mode, optimization level s.
+// Compiling the bootloader under -O2 (free) optimization
+// levels will result in larger sizes, and addresses
+// that are hard coded, such as the reset and 
+// interrupt jump vectors may need to be adjusted.
 //
 //  The bootloader consists of a number of modules:
 //
@@ -45,19 +49,20 @@ SOFTWARE.
 // ------------------------------------
 //  
 //  Load the hex file.  Crop to the Application range
-//  0x180-0xFFF (16 bit word addresses) or 0x300-0x1FFE
+//  0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE
 //  (8 bit addresses), inclusive
 //  Fill any empty locations in the hex file inside the 
 //  application space with 0x3FFF .
 //
 //  Connect at 115,200 / 8-N-1
 //
-//  Optionally wait for a 'U' character to indicate bootloader entry.
+//  Optionally wait for a EBOOTx>> string to indicate bootloader entry.
+//  x indicates reason for bootload mode.
 //  This is sent once after reset if the bootloader stays in boot mode
 //  
 //  Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download
-//  sequence.  If the bootloader does not respond with 'E' then send again
-//  until an 'E' follows.
+//  sequence.  If the bootloader does not respond with 'e' then send again
+//  until an 'e' follows.
 //
 //  The bootloader will Erase the entire Application Area.  In testing this
 //  took about 300mS.  Wait for a 'W' to be sent indicating the bootloader
@@ -145,7 +150,7 @@ psect  resetstub,global,class=CODE,delta=2,abs
 
 //This needs to match the offset value in the linker settings for the application
 //project.
-#define  NEW_RESET_VECTOR        0x180 
+#define  NEW_RESET_VECTOR        0x140 
 #define  NEW_INTERRUPT_VECTOR    (NEW_RESET_VECTOR + 4)
 #define _str(x)  #x
 #define str(x)  _str(x)
@@ -165,9 +170,10 @@ psect  resetstub,global,class=CODE,delta=2,abs
 void StartWrite(void);
 uint8_t EUSART1_Read(void);
 void EUSART1_Write(uint8_t txData);
-bool Bootload_Required(void);
+uint8_t Bootload_Required(void);
 void Run_Bootloader(void);
 
+uint8_t bootloadReason = 0;
 
 
 void main(void)
@@ -267,12 +273,15 @@ void main(void)
 			// SP1BRGH = 0x00; //Commented out to save flash due to match reset value
 		}
 
-
-		if (Bootload_Required () == true)
+        
+        bootloadReason = Bootload_Required ();
+        
+		if (bootloadReason != 0)
 		{
-			Run_Bootloader ();     // generic comms layer
+			Run_Bootloader ();      
 		}
-
+       
+        
 		//Not bootloading.  Set up for jump to app.
 		STKPTR = 0x1F;
 		BSR = 0;
@@ -287,8 +296,14 @@ uint8_t startBytes[4];
 void StartWrite();
 void Run_Bootloader()
 { 
-	TX1REG = 'U'; // Indicate Bootloader Entry.  First transmit, so no need to delay.
-
+	TX1REG = 'E'; // Indicate Bootloader Entry.  First transmit, so no need to delay.
+    EUSART1_Write('B');
+    EUSART1_Write('O');
+    EUSART1_Write('O');
+    EUSART1_Write('T');
+    EUSART1_Write(bootloadReason);
+    EUSART1_Write('>');
+    EUSART1_Write('>');
     startBytes[3] = 0;
     
 	while (startBytes[0] != 0x52 ||
@@ -301,7 +316,7 @@ void Run_Bootloader()
 		startBytes[2] = startBytes[3];
 		startBytes[3] = EUSART1_Read();
 	}
-	TX1REG = 'E';   // Waited for receipt of at least 4 characters, so no need to delay. 
+	TX1REG = 'e';   // Waited for receipt of at least 4 characters, so no need to delay. 
 
 	//void Erase_Flash ()
 	{
@@ -381,7 +396,7 @@ void Run_Bootloader()
 //    App that we should stay in boot)
 // *  The voltage on Vdd is less than 2.2V across 2 samples 100ms Apart
 
-bool Bootload_Required ()
+uint8_t Bootload_Required ()
 {
 
 	// Check to see if the last address is 0x14B7
@@ -393,12 +408,12 @@ bool Bootload_Required ()
 		NVMCON1 = 0;
 		if (NVMDATL != 0xB7)
 		{
-			return(true);
+			return('L');
 		}
 
 		if (NVMDATH != 0x14)
 		{
-			return(true);
+			return('H');
 		}
 	}
 
@@ -411,7 +426,7 @@ bool Bootload_Required ()
 		NVMCON1 = 0;
 		if (NVMDATL == 0xFF && NVMDATH == 0x3F)
 		{
-			return(true);
+			return('F');
 		}
 	}
 
@@ -419,7 +434,7 @@ bool Bootload_Required ()
 	{ 
 		if (PCON0bits.STKOVF) //Stack overflow - indicator from application to stay in boot mode.
 		{
-			return (true);
+			return ('S');
 		}
 	}
 
@@ -454,9 +469,9 @@ bool Bootload_Required ()
 			while (ADCON0bits.GO_nDONE)
 			{
 			}
-			if (ADRESH > 0x77) {return (true);};
+			if (ADRESH > 0x77) {return ('V');};
 		}
-		return (false);
+		return (0);
 	}
 }
 

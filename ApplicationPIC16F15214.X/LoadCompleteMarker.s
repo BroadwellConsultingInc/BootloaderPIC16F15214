@@ -29,9 +29,12 @@ psect   loadCompleteMarker,local,class=CODE,abs ; PIC10/12/16
     DW 14B7h    ; here we use a symbol defined via xc.inc
 psect  resetstub,global,class=CODE,delta=2,abs
   ORG 0
-    pagesel 180h
-    GOTO 180h
+    pagesel 140h
+    GOTO 140h
   
   ORG 4
-    pagesel 184h
-    GOTO 184h
+    pagesel 144h
+    GOTO 144h
+    
+ psect JumpToBoot,global,class=CODE
+ 

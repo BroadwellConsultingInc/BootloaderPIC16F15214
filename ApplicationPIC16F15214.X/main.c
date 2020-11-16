@@ -57,6 +57,11 @@ SOFTWARE.
 /*
                          Main application
  */
+
+void dummyFunction()
+{
+    PCON0 &= 0x80; // Set overflow bit  (Shouldn't actually do anything since we reset before here)
+}
 void main(void)
 {
     // initialize the device
@@ -79,14 +84,32 @@ void main(void)
 
     INTERRUPT_PeripheralInterruptEnable();
     INTERRUPT_GlobalInterruptEnable();
+    char outputString[] = "Hello World!";
     while (1)
     {
-        char outputString[] = "Hello World!";
+        
         
         int i;
         for (i = 0; outputString[i] != 0; ++i)
         {
             EUSART1_Write(outputString[i]);
+        }
+        
+        uint32_t x;
+        for (x = 0; x < 20000; ++x)
+        {
+        if (EUSART1_is_rx_ready())
+        {
+            uint8_t input = EUSART1_Read();
+            if (input == 'J')
+            {
+                INTERRUPT_GlobalInterruptDisable();
+                STKPTR = 0xF; // Max value
+                dummyFunction();  // Cause a stack reset.
+
+                
+            }
+        }
         }
         // Add your application code
     }

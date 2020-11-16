@@ -74,11 +74,11 @@ namespace PIC16F15214BootloaderApp
             if (_filename != null)
 
             {
-                try
+           //     try
                 {
                     DownloadHex(_filename);
                 }
-                catch (TimeoutException)
+               /* catch (TimeoutException)
                 {
                     lState.Text = "Timeout";
                     _port.Close();
@@ -89,7 +89,7 @@ namespace PIC16F15214BootloaderApp
                     lState.Text = "Exception Thrown";
                     _port.Close();
                 }
-
+               */
             }
 
         }
@@ -97,8 +97,8 @@ namespace PIC16F15214BootloaderApp
         private bool DownloadHex(string filename)
         {
             HexData data = new HexData(filename, true);
-            data.Crop(0x180 * 2, 0x1000 * 2);
-            data.Fill16(0x180 * 2, 0x1000 * 2, 0x3FFF);
+            data.Crop(0x140 * 2, 0x1000 * 2);
+            data.Fill16(0x140 * 2, 0x1000 * 2, 0x3FFF);
             progressBar1.Value = 0x300;
             _port.Open();
             _port.ReadTimeout = 2000;
@@ -127,7 +127,7 @@ namespace PIC16F15214BootloaderApp
             {
                 byte b = (byte)_port.ReadByte();
                 _port.ReadTimeout = priorTimout;
-                return (b == 'E');
+                return (b == 'e');
             }
             catch
             {
@@ -180,16 +180,20 @@ namespace PIC16F15214BootloaderApp
             byte[] incomingdata = new byte[length];
             int count = 0;
             byte Rbyte = (byte)_port.ReadByte();
+            progressBar1.Minimum = 0; progressBar1.Maximum = int.MaxValue;
+            progressBar1.Value = (int)lowestAddress;
+            progressBar1.Minimum = (int)lowestAddress;
+            progressBar1.Maximum = (int)highestAddress + 1;
             while (count < length)
             {
                 if (_port.BytesToRead > 0)
                 {
                     incomingdata[count] = (byte)_port.ReadByte();
                     ++count;
-                    if ((count % 128) == 0)
+                    if ((count % 128) == 0 )
                     {
                         lState.Text = $"Verifying... 0x{count:X2}";
-                        progressBar1.Value = count + 0x300 - 1;
+                        progressBar1.Value = (int)(count + lowestAddress);
                         this.Refresh();
                     }
                 }
