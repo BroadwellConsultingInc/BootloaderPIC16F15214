@@ -1,4 +1,9 @@
-/*
+/*!
+\file main.c
+\mainpage PIC16F15214Bootloader
+Latest version can be found at:
+https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214
+\copyright
 MIT License
 
 Copyright (c) 2020 Broadwell Consulting Inc.
@@ -20,124 +25,132 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
 
-//Latest version can be found at:
-//https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214
+\htmlonly
+<iframe width="560" height="315" src="https://www.youtube.com/embed/OfW4hHFVy3U" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+\endhtmlonly
 
-// The main program implements a bootloader that runs without 
-// interrupts.  It was developed on MPLAB X v5.40 and XC8
-// v2.31 running in PRO mode, optimization level s.
-// Compiling the bootloader under -O2 (free) optimization
-// levels will result in larger sizes, and addresses
-// that are hard coded, such as the reset and 
-// interrupt jump vectors may need to be adjusted.
-//
-//  The bootloader consists of a number of modules:
-//
-// 1.  Initialization
-// 2.  Stay in Boot Check
-//     If stay in boot (else jump to App)...
-// 3.  Wait for boot handshake word
-// 4.  Erase entire application area
-// 5.  Send a 'W' command and write 64 received bytes (32 words) to flash
-// 6.  Repeat (5.) until all words have been received 
-// 7.  Read entire application flash area out through serial port
-// 8.  While(1) loop waiting for power cycle reset.
-//
-//  Logic for downloading application image:
-// ------------------------------------
-//  
-//  Load the hex file.  Crop to the Application range
-//  0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE
-//  (8 bit addresses), inclusive
-//  Fill any empty locations in the hex file inside the 
-//  application space with 0x3FFF .
-//
-//  Connect at 115,200 / 8-N-1
-//
-//  Optionally wait for a EBOOTx>> string to indicate bootloader entry.
-//  x indicates reason for bootload mode.
-//  This is sent once after reset if the bootloader stays in boot mode
-//  
-//  Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download
-//  sequence.  If the bootloader does not respond with 'e' then send again
-//  until an 'e' follows.
-//
-//  The bootloader will Erase the entire Application Area.  In testing this
-//  took about 300mS.  Wait for a 'W' to be sent indicating the bootloader
-//  is ready to begin writing.
-//
-//  send 64 bytes of data to be programmed, starting at address 0x180.
-//
-//  wait for another 'W' response, and send the next 64 bytes.
-//  Continue this way until the entire application area is sent.
-//
-//  The bootloader will respond with a final 'W', then an 'R'
-//  indicating that the bootloader is now reading out flash.
-//
-//  The bootloader will send the entire contents of the application
-//  flash area.  Verify this against the hex file to determine
-//  if programming was correct.
-//
-//  Power cycle the micro to exit boot mode.
-//
-//
-//
-//  Building a downloadable application:
-// ------------------------------------
-// In order to build an application that can be downloaded 
-// with this bootloader, the application must be shifted 
-// up 0x180 words.  
-// This is done in MPLAB X v5.40 by choosing 
-// project properties/XC8 global options / XC8 Global Options/
-// XC8 Linker / Additional Options
-// and putting 0x180 in the Codeoffset window
-//
-// The final word of the application's flash must be 0x14B7
-// This can be achieved by adding an assembly .s file that 
-// contains the following (code also sets a stub reset vector 
-// for IDE debugging):
-/*
+Overview
+---------
+The main program implements a bootloader that runs without 
+interrupts.  It was developed on MPLAB X v5.40 and XC8
+v2.31 running in PRO mode, optimization level s.
+Compiling the bootloader under -O2 (free) optimization
+levels will result in larger sizes, and addresses
+that are hard coded, such as the reset and 
+interrupt jump vectors at 0x140 and 0x144 may need to be adjusted.
+
+ The bootloader consists of a number of modules:
+
+1.  Initialization
+2.  Stay in Boot Check
+    If stay in boot (else jump to App)...
+3.  Wait for boot handshake word
+4.  Erase entire application area
+5.  Send a 'W' command and write 64 received bytes (32 words) to flash
+6.  Repeat (5.) until all words have been received 
+7.  Read entire application flash area out through serial port
+8.  While(1) loop waiting for power cycle reset.
+
+ Logic for downloading application image:
+------------------------------------
+(A C# .Net Core app which performs these steps can be downloaded from
+https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/PIC16F15214BootloaderApp )
+
+Load the hex file.  Crop to the Application range
+0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE
+(8 bit addresses), inclusive
+Fill any empty locations in the hex file inside the 
+application space with 0x3FFF .
+
+Connect at 115,200 / 8-N-1
+
+Optionally wait for a EBOOTx>> string to indicate bootloader entry.
+x indicates reason for bootload mode.
+
+This is sent once after reset if the bootloader stays in boot mode
+
+Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download
+sequence.  If the bootloader does not respond with 'e' then send again
+until an 'e' follows.
+
+The bootloader will Erase the entire Application Area.  In testing this
+took about 300mS.  Wait for a 'W' to be sent indicating the bootloader
+is ready to begin writing.
+
+send 64 bytes of data to be programmed, starting at address 0x140.
+
+wait for another 'W' response, and send the next 64 bytes.
+Continue this way until the entire application area is sent.
+
+The bootloader will respond with a final 'W', then an 'R'
+indicating that the bootloader is now reading out flash.
+
+The bootloader will send the entire contents of the application
+flash area.  Verify this against the hex file to determine
+if programming was correct.
+
+Power cycle the micro to exit boot mode.
+
+
+
+Building a downloadable application:
+------------------------------------
+(A sample application can be found at 
+https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/ApplicationPIC16F15214.X )
+
+In order to build an application that can be downloaded 
+with this bootloader, the application must be shifted 
+up 0x140 words.  
+This is done in MPLAB X v5.40 by choosing 
+project properties/XC8 global options / XC8 Global Options/
+XC8 Linker / Additional Options
+and putting 0x140 in the Codeoffset window
+
+The final word of the application's flash must be 0x14B7
+This can be achieved by adding an assembly .s file that 
+contains the following (code also sets a stub reset vector 
+for IDE debugging):
+\code{.unparsed}
 psect   loadCompleteMarker,local,class=CODE,abs ; PIC10/12/16
 
-  ORG 1FFEh   
-    DW 14B7h    ; here we use a symbol defined via xc.inc
+ ORG 1FFEh   
+   DW 14B7h    ; here we use a symbol defined via xc.inc
 psect  resetstub,global,class=CODE,delta=2,abs
-  ORG 0
-    pagesel 180h
-    GOTO 180h
-  
-  ORG 4
-    pagesel 184h
-    GOTO 184h
-*/
-// 
-// This area must be reserved by the linker, or it will override
-// any code in this area.
-//  This is done in MPLAB X v5.40 by choosing 
-// project properties/XC8 global options / XC8 Global Options/
-// XC8 Linker / Memory Model
-// and putting 
-// -FFF-FFF
-// in the "ROM ranges" box to remove that space from available 
-// area for allocation.
-//
-// Before using this bootloader you should consider the device configuration
-// settings in device_config.c  .  These are the settings that will be used
-// for both the bootloader and application.  The application will NOT download
-// new configuration byte settings.  For instance, if your application requires
-// a permanently turned on watchdog, then the config bits (and this bootloader)
-// will need to be modified.  
-//
-// The built application now has no reset vector or interrupt vector at the
-// address 0x0000 / 0x0004 in the micro.  This will make the code unusable
-// if it is downloaded via a programmer/debugger
-// rather than the bootloader, making
-// debugging with an ICD or PicKit difficult.  To solve this problem
-// stub vectors are added in the assembly snippet above which jump from
-// the natural vector locations to the offset locations in the application.
+ ORG 0
+   pagesel 140
+   GOTO 140
+ 
+ ORG 4
+   pagesel 144h
+   GOTO 144h
+\endcode
 
+This area must be reserved by the linker, or it will override
+any code in this area.
+ This is done in MPLAB X v5.40 by choosing 
+project properties/XC8 global options / XC8 Global Options/
+XC8 Linker / Memory Model
+and putting 
+-FFF-FFF
+in the "ROM ranges" box to remove that space from available 
+area for allocation.
+
+Before using this bootloader you should consider the device configuration
+settings in device_config.c  .  These are the settings that will be used
+for both the bootloader and application.  The application will NOT download
+new configuration byte settings.  For instance, if your application requires
+a permanently turned on watchdog, then the config bits (and this bootloader)
+will need to be modified.  
+
+The built application now has no reset vector or interrupt vector at the
+address 0x0000 / 0x0004 in the micro.  This will make the code unusable
+if it is downloaded via a programmer/debugger
+rather than the bootloader, making
+debugging with an ICD or PicKit difficult.  To solve this problem
+stub vectors are added in the assembly snippet above which jump from
+the natural vector locations to the offset locations in the application.
+*/
 
 
 #include <xc.h>
