@@ -36,5 +36,5 @@ psect  resetstub,global,class=CODE,delta=2,abs
     pagesel 144h
     GOTO 144h
     
- psect JumpToBoot,global,class=CODE
+ 
  

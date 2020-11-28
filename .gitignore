@@ -1,3 +1,15 @@
 
 *.s~
 *.un~
+*.i
+*.lst
+*.p1
+*.d
+*.o
+*.cmf
+*.rlf
+*.hxl
+*.mum
+*.sdb
+*.sym
+*.xml
