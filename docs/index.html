@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: PIC16F15214Bootloader</title>
+<title>PIC16F15214 Bootloader: PIC16F15214Bootloader</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,8 +20,9 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">PIC16F15214 Bootloader
    </div>
   </td>
  </tr>
@@ -70,42 +71,47 @@ $(function() {
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
 <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+<h2><a class="anchor" id="autotoc_md0"></a>
+Video Tutorial</h2>
 <p> 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OfW4hHFVy3U" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</p>
-<h2><a class="anchor" id="autotoc_md0"></a>
+ Note that the Rx pin has moved from pin 3 (RA4) to pin 4 (RA3) since this video was made. The user may select their own pins by changing the TRISA and PPS configuration.</p>
+<h2><a class="anchor" id="autotoc_md1"></a>
 Overview</h2>
 <p>The main program implements a bootloader that runs without interrupts. It was developed on MPLAB X v5.40 and XC8 v2.31 running in PRO mode, optimization level s. Compiling the bootloader under -O2 (free) optimization levels will result in larger sizes, and addresses that are hard coded, such as the reset and interrupt jump vectors at 0x140 and 0x144 may need to be adjusted.</p>
 <p>The bootloader consists of a number of modules:</p>
-<ol type="1">
-<li>Initialization</li>
-<li>Stay in Boot Check If stay in boot (else jump to App)...</li>
-<li>Wait for boot handshake word</li>
-<li>Erase entire application area</li>
-<li>Send a 'W' command and write 64 received bytes (32 words) to flash</li>
-<li>Repeat (5.) until all words have been received</li>
-<li>Read entire application flash area out through serial port</li>
-<li>While(1) loop waiting for power cycle reset.</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md1"></a>
+<p>1- Initialization</p>
+<p>2- Stay in Boot Check</p>
+<p>If stay in boot (else jump to App)...</p>
+<p>3- Wait for boot handshake word</p>
+<p>4- Erase entire application area</p>
+<p>5- Send a 'W' command and write 64 received bytes (32 words) to flash</p>
+<p>6- Repeat (5.) until all words have been received</p>
+<p>7- Read entire application flash area out through serial port</p>
+<p>8- While(1) loop waiting for power cycle reset.</p>
+<h2><a class="anchor" id="autotoc_md2"></a>
 Logic for downloading application image:</h2>
 <p>(A C# .Net Core app which performs these steps can be downloaded from <a href="https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/PIC16F15214BootloaderApp">https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/PIC16F15214BootloaderApp</a> )</p>
-<p>Load the hex file. Crop to the Application range 0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE (8 bit addresses), inclusive Fill any empty locations in the hex file inside the application space with 0x3FFF .</p>
-<p>Connect at 115,200 / 8-N-1</p>
-<p>Optionally wait for a EBOOTx&gt;&gt; string to indicate bootloader entry. x indicates reason for bootload mode.</p>
-<p>This is sent once after reset if the bootloader stays in boot mode</p>
-<p>Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download sequence. If the bootloader does not respond with 'e' then send again until an 'e' follows.</p>
-<p>The bootloader will Erase the entire Application Area. In testing this took about 300mS. Wait for a 'W' to be sent indicating the bootloader is ready to begin writing.</p>
-<p>send 64 bytes of data to be programmed, starting at address 0x140.</p>
-<p>wait for another 'W' response, and send the next 64 bytes. Continue this way until the entire application area is sent.</p>
+<p>1- Load the hex file. Crop to the Application range 0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE (8 bit addresses), inclusive Fill any empty locations in the hex file inside the application space with 0x3FFF .</p>
+<p>2- Connect at 115,200 / 8-N-1</p>
+<p>3- Optionally wait for a EBOOTx&gt;&gt; string to indicate bootloader entry. x indicates reason for bootload mode.</p>
+<p>4- This is sent once after reset if the bootloader stays in boot mode</p>
+<p>5- Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download sequence. If the bootloader does not respond with 'e' then send again until an 'e' follows.</p>
+<p>The bootloader will Erase the entire Application Area. In testing this took about 300mS. <br  />
+</p>
+<p>6- Wait for a 'W' to be sent indicating the bootloader is ready to begin writing.</p>
+<p>7- Send 64 bytes of data to be programmed, starting at address 0x140.</p>
+<p>8- Wait for another 'W' response, and send the next 64 bytes. Continue this way until the entire application area is sent.</p>
 <p>The bootloader will respond with a final 'W', then an 'R' indicating that the bootloader is now reading out flash.</p>
-<p>The bootloader will send the entire contents of the application flash area. Verify this against the hex file to determine if programming was correct.</p>
-<p>Power cycle the micro to exit boot mode.</p>
-<h2><a class="anchor" id="autotoc_md2"></a>
+<p>The bootloader will send the entire contents of the application flash area. <br  />
+</p>
+<p>9- Verify this against the hex file to determine if programming was correct.</p>
+<p>10- Power cycle the micro to exit boot mode.</p>
+<h2><a class="anchor" id="autotoc_md3"></a>
 Building a downloadable application:</h2>
 <p>(A sample application can be found at <a href="https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/ApplicationPIC16F15214.X">https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/ApplicationPIC16F15214.X</a> )</p>
 <p>In order to build an application that can be downloaded with this bootloader, the application must be shifted up 0x140 words. <br  />
- This is done in MPLAB X v5.40 by choosing project properties/XC8 global options / XC8 Global Options/ XC8 Linker / Additional Options and putting 0x140 in the Codeoffset window</p>
+ This is done in MPLAB X v5.40 by choosing project properties/XC8 global options / XC8 Global Options/ XC8 Linker / Additional Options and putting 0x140 in the Codeoffset window.</p>
 <p>The final word of the application's flash must be 0x14B7 This can be achieved by adding an assembly .s file that contains the following (code also sets a stub reset vector for IDE debugging): </p><div class="fragment"><div class="line">psect   loadCompleteMarker,local,class=CODE,abs ; PIC10/12/16</div>
 <div class="line"> </div>
 <div class="line"> ORG 1FFEh   </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: BootloaderPIC16F15214.X/main.c File Reference</title>
+<title>PIC16F15214 Bootloader: BootloaderPIC16F15214.X/main.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -20,8 +20,9 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">PIC16F15214 Bootloader
    </div>
   </td>
  </tr>
@@ -80,14 +81,19 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a3262065631b9e4159c57eaa3dc5333ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a3262065631b9e4159c57eaa3dc5333ba">WRITE_FLASH_BLOCKSIZE</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a3262065631b9e4159c57eaa3dc5333ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write Size of a line of flash in words.  <a href="main_8c.html#a3262065631b9e4159c57eaa3dc5333ba">More...</a><br /></td></tr>
 <tr class="separator:a3262065631b9e4159c57eaa3dc5333ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96d0844a0ca8255fff8bb2d96d7c0779"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a96d0844a0ca8255fff8bb2d96d7c0779">ERASE_FLASH_BLOCKSIZE</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a96d0844a0ca8255fff8bb2d96d7c0779"><td class="mdescLeft">&#160;</td><td class="mdescRight">ERASE Size of a line of flash in words.  <a href="main_8c.html#a96d0844a0ca8255fff8bb2d96d7c0779">More...</a><br /></td></tr>
 <tr class="separator:a96d0844a0ca8255fff8bb2d96d7c0779"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f5e97b130e249bb5c96354b4933bb76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a1f5e97b130e249bb5c96354b4933bb76">END_FLASH</a>&#160;&#160;&#160;0x1000</td></tr>
+<tr class="memdesc:a1f5e97b130e249bb5c96354b4933bb76"><td class="mdescLeft">&#160;</td><td class="mdescRight">End address of flash programming area (exclusive)  <a href="main_8c.html#a1f5e97b130e249bb5c96354b4933bb76">More...</a><br /></td></tr>
 <tr class="separator:a1f5e97b130e249bb5c96354b4933bb76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5dfd38fda9bba6e2d1dd739be92270e7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a5dfd38fda9bba6e2d1dd739be92270e7">NEW_RESET_VECTOR</a>&#160;&#160;&#160;0x140</td></tr>
+<tr class="memdesc:a5dfd38fda9bba6e2d1dd739be92270e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The address (in words) in flash where the Application's reset vector will be placed.  <a href="main_8c.html#a5dfd38fda9bba6e2d1dd739be92270e7">More...</a><br /></td></tr>
 <tr class="separator:a5dfd38fda9bba6e2d1dd739be92270e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ac096d1cb3125525fe2bda66757319b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a0ac096d1cb3125525fe2bda66757319b">NEW_INTERRUPT_VECTOR</a>&#160;&#160;&#160;(<a class="el" href="main_8c.html#a5dfd38fda9bba6e2d1dd739be92270e7">NEW_RESET_VECTOR</a> + 4)</td></tr>
+<tr class="memdesc:a0ac096d1cb3125525fe2bda66757319b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The address (in words) in flash where the Application's interrupt handler or interrupt handler goto statement will be placed.  <a href="main_8c.html#a0ac096d1cb3125525fe2bda66757319b">More...</a><br /></td></tr>
 <tr class="separator:a0ac096d1cb3125525fe2bda66757319b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48022fb9d9279223134c2a62c9fcbb14"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a48022fb9d9279223134c2a62c9fcbb14">_str</a>(x)&#160;&#160;&#160;#x</td></tr>
 <tr class="separator:a48022fb9d9279223134c2a62c9fcbb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,24 +108,32 @@ Functions</h2></td></tr>
 <tr class="separator:a4e5ad83dfd434034050c9bb1412d94f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59e4c9e844ec5e8183b5b71244213187"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a59e4c9e844ec5e8183b5b71244213187">asm</a> (&quot;GOTO &quot; str(<a class="el" href="main_8c.html#a0ac096d1cb3125525fe2bda66757319b">NEW_INTERRUPT_VECTOR</a>))</td></tr>
 <tr class="separator:a59e4c9e844ec5e8183b5b71244213187"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3297488384c4cfbba04d0f1d8b0e4def"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a3297488384c4cfbba04d0f1d8b0e4def">StartWrite</a> (void)</td></tr>
-<tr class="separator:a3297488384c4cfbba04d0f1d8b0e4def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0471d23ee7d7886517e2171a5ee5c2e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#ab0471d23ee7d7886517e2171a5ee5c2e">StartWrite</a> ()</td></tr>
+<tr class="memdesc:ab0471d23ee7d7886517e2171a5ee5c2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlock and start the write or erase sequence. See the PIC16F15214 datasheet.  <a href="main_8c.html#ab0471d23ee7d7886517e2171a5ee5c2e">More...</a><br /></td></tr>
+<tr class="separator:ab0471d23ee7d7886517e2171a5ee5c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4dd58b431d4f59c5b78f909b0b9cb0b"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#ab4dd58b431d4f59c5b78f909b0b9cb0b">EUSART1_Read</a> (void)</td></tr>
+<tr class="memdesc:ab4dd58b431d4f59c5b78f909b0b9cb0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until a byte is avaialble from the UART and return it.  <a href="main_8c.html#ab4dd58b431d4f59c5b78f909b0b9cb0b">More...</a><br /></td></tr>
 <tr class="separator:ab4dd58b431d4f59c5b78f909b0b9cb0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6acb88a121ac046bf5ae77f9a3521350"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a6acb88a121ac046bf5ae77f9a3521350">EUSART1_Write</a> (uint8_t txData)</td></tr>
+<tr class="memdesc:a6acb88a121ac046bf5ae77f9a3521350"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until buffer space is avaialble in the UART and transmit a byte.  <a href="main_8c.html#a6acb88a121ac046bf5ae77f9a3521350">More...</a><br /></td></tr>
 <tr class="separator:a6acb88a121ac046bf5ae77f9a3521350"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6c4fa2df51467b1b23ae9e9005cc337"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#ab6c4fa2df51467b1b23ae9e9005cc337">Bootload_Required</a> (void)</td></tr>
-<tr class="separator:ab6c4fa2df51467b1b23ae9e9005cc337"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c5707ac255ca04c569283febb4aeca0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a1c5707ac255ca04c569283febb4aeca0">Run_Bootloader</a> (void)</td></tr>
-<tr class="separator:a1c5707ac255ca04c569283febb4aeca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d8877fee16261dbb851671a8a4e571d"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a7d8877fee16261dbb851671a8a4e571d">Bootload_Required</a> ()</td></tr>
+<tr class="memdesc:a7d8877fee16261dbb851671a8a4e571d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether we should stay in the bootloader or jump to app Jump to app will happen unless one of the following criteria is present:  <a href="main_8c.html#a7d8877fee16261dbb851671a8a4e571d">More...</a><br /></td></tr>
+<tr class="separator:a7d8877fee16261dbb851671a8a4e571d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5cef2d35a746ea51fccbed5de13a59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a8e5cef2d35a746ea51fccbed5de13a59">Run_Bootloader</a> ()</td></tr>
+<tr class="memdesc:a8e5cef2d35a746ea51fccbed5de13a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">The bootloader programming executable. This function is called if the Bootload_Required function indicates a bootload is required.  <a href="main_8c.html#a8e5cef2d35a746ea51fccbed5de13a59">More...</a><br /></td></tr>
+<tr class="separator:a8e5cef2d35a746ea51fccbed5de13a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6288eba0f8e8ad3ab1544ad731eb7667"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a6288eba0f8e8ad3ab1544ad731eb7667">main</a> (void)</td></tr>
+<tr class="memdesc:a6288eba0f8e8ad3ab1544ad731eb7667"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main Program The main program contains a flattening of a number of functions created for initialization inside SYSTEM_Initialize by the Microchip code configurator (MCC) tool. The function calls were removed to save flash space since most functions simply assign values to registers. The original function name is commented out but left in to help line comparison software in the case that a comparison is done between this main and a new MCC generation. The Bootloader runs at 16MHz so that it can run down to 1.8V.  <a href="main_8c.html#a6288eba0f8e8ad3ab1544ad731eb7667">More...</a><br /></td></tr>
 <tr class="separator:a6288eba0f8e8ad3ab1544ad731eb7667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:aa941e6052e57bd2e32eb37aa6fc63ec7"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#aa941e6052e57bd2e32eb37aa6fc63ec7">bootloadReason</a> = 0</td></tr>
+<tr class="memdesc:aa941e6052e57bd2e32eb37aa6fc63ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global variable storing reason that the bootloader stayed in boot rather than jumping to the application.  <a href="main_8c.html#aa941e6052e57bd2e32eb37aa6fc63ec7">More...</a><br /></td></tr>
 <tr class="separator:aa941e6052e57bd2e32eb37aa6fc63ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17320ba05aa093d6a48de629f063593a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a17320ba05aa093d6a48de629f063593a">startBytes</a> [4]</td></tr>
+<tr class="memdesc:a17320ba05aa093d6a48de629f063593a"><td class="mdescLeft">&#160;</td><td class="mdescRight">An array of bytes that is treated like a FIFO by the code. This array stores the last 4 bytes received and compares them to a magic value to enter the bootloader.  <a href="main_8c.html#a17320ba05aa093d6a48de629f063593a">More...</a><br /></td></tr>
 <tr class="separator:a17320ba05aa093d6a48de629f063593a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -153,6 +167,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>End address of flash programming area (exclusive) </p>
+
 </div>
 </div>
 <a id="a96d0844a0ca8255fff8bb2d96d7c0779"></a>
@@ -166,6 +182,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>ERASE Size of a line of flash in words. </p>
 
 </div>
 </div>
@@ -181,6 +199,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The address (in words) in flash where the Application's interrupt handler or interrupt handler goto statement will be placed. </p>
+
 </div>
 </div>
 <a id="a5dfd38fda9bba6e2d1dd739be92270e7"></a>
@@ -194,6 +214,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The address (in words) in flash where the Application's reset vector will be placed. </p>
 
 </div>
 </div>
@@ -226,6 +248,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write Size of a line of flash in words. </p>
 
 </div>
 </div>
@@ -300,8 +324,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab6c4fa2df51467b1b23ae9e9005cc337"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6c4fa2df51467b1b23ae9e9005cc337">&#9670;&nbsp;</a></span>Bootload_Required()</h2>
+<a id="a7d8877fee16261dbb851671a8a4e571d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d8877fee16261dbb851671a8a4e571d">&#9670;&nbsp;</a></span>Bootload_Required()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -309,12 +333,19 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">uint8_t Bootload_Required </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Determine whether we should stay in the bootloader or jump to app Jump to app will happen unless one of the following criteria is present: </p>
+<ul>
+<li>The first location in App space is unprogrammed (0x3FFF)</li>
+<li>The last location is App space is not the magic number 0x14B7</li>
+<li>The last reset was caused by a hardware stack overflow (indication from App that we should stay in boot)</li>
+<li>The voltage on Vdd is less than 2.2V across 2 samples 100ms Apart </li>
+</ul>
 
 </div>
 </div>
@@ -334,6 +365,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Wait until a byte is avaialble from the UART and return it. </p>
+
 </div>
 </div>
 <a id="a6acb88a121ac046bf5ae77f9a3521350"></a>
@@ -352,6 +385,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Wait until buffer space is avaialble in the UART and transmit a byte. </p>
+
 </div>
 </div>
 <a id="a6288eba0f8e8ad3ab1544ad731eb7667"></a>
@@ -369,6 +404,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Main Program The main program contains a flattening of a number of functions created for initialization inside SYSTEM_Initialize by the Microchip code configurator (MCC) tool. The function calls were removed to save flash space since most functions simply assign values to registers. The original function name is commented out but left in to help line comparison software in the case that a comparison is done between this main and a new MCC generation. The Bootloader runs at 16MHz so that it can run down to 1.8V. </p>
 <p>LATx registers</p>
 <p>TRISx registers</p>
 <p>ANSELx registers</p>
@@ -379,8 +416,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a1c5707ac255ca04c569283febb4aeca0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c5707ac255ca04c569283febb4aeca0">&#9670;&nbsp;</a></span>Run_Bootloader()</h2>
+<a id="a8e5cef2d35a746ea51fccbed5de13a59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e5cef2d35a746ea51fccbed5de13a59">&#9670;&nbsp;</a></span>Run_Bootloader()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -395,10 +432,12 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The bootloader programming executable. This function is called if the Bootload_Required function indicates a bootload is required. </p>
+
 </div>
 </div>
-<a id="a3297488384c4cfbba04d0f1d8b0e4def"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3297488384c4cfbba04d0f1d8b0e4def">&#9670;&nbsp;</a></span>StartWrite()</h2>
+<a id="ab0471d23ee7d7886517e2171a5ee5c2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0471d23ee7d7886517e2171a5ee5c2e">&#9670;&nbsp;</a></span>StartWrite()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -412,6 +451,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Unlock and start the write or erase sequence. See the PIC16F15214 datasheet. </p>
 
 </div>
 </div>
@@ -428,6 +469,15 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Global variable storing reason that the bootloader stayed in boot rather than jumping to the application. </p>
+<p>Valid values are:</p><ul>
+<li>'L' - The low byte of the flash end programming magic value was not correct</li>
+<li>'H' - The high byte of the flash end programming magic value was not correct</li>
+<li>'F' - The first byte of flash in application was not programmed to non-erased value</li>
+<li>'S' - The Stack Overflow indicator is set (application request to stay in boot)</li>
+<li>'V' - The system voltage was less than 2.2 volts, indicating an external request to stay in boot. </li>
+</ul>
+
 </div>
 </div>
 <a id="a17320ba05aa093d6a48de629f063593a"></a>
@@ -441,6 +491,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>An array of bytes that is treated like a FIFO by the code. This array stores the last 4 bytes received and compares them to a magic value to enter the bootloader. </p>
 
 </div>
 </div>

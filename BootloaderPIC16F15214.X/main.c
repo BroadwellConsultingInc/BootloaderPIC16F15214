@@ -26,9 +26,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+Video Tutorial
+--------------
 \htmlonly
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OfW4hHFVy3U" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 \endhtmlonly
+Note that the Rx pin has moved from pin 3 (RA4) to pin 4 (RA3) since this video was made.  The user may select their own pins by changing the TRISA and PPS configuration.
 
 Overview
 ---------
@@ -42,55 +45,55 @@ interrupt jump vectors at 0x140 and 0x144 may need to be adjusted.
 
  The bootloader consists of a number of modules:
 
-1.  Initialization
-2.  Stay in Boot Check
-    If stay in boot (else jump to App)...
-3.  Wait for boot handshake word
-4.  Erase entire application area
-5.  Send a 'W' command and write 64 received bytes (32 words) to flash
-6.  Repeat (5.) until all words have been received 
-7.  Read entire application flash area out through serial port
-8.  While(1) loop waiting for power cycle reset.
+1-  Initialization
+
+2-  Stay in Boot Check
+
+If stay in boot (else jump to App)...
+
+3-  Wait for boot handshake word
+
+4-  Erase entire application area
+
+5-  Send a 'W' command and write 64 received bytes (32 words) to flash
+
+6-  Repeat (5.) until all words have been received 
+
+7-  Read entire application flash area out through serial port
+
+8-  While(1) loop waiting for power cycle reset.
+
 
  Logic for downloading application image:
 ------------------------------------
 (A C# .Net Core app which performs these steps can be downloaded from
 https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/PIC16F15214BootloaderApp )
 
-Load the hex file.  Crop to the Application range
-0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE
-(8 bit addresses), inclusive
-Fill any empty locations in the hex file inside the 
-application space with 0x3FFF .
+1- Load the hex file.  Crop to the Application range 0x140-0xFFF (16 bit word addresses) or 0x280-0x1FFE (8 bit addresses), inclusive Fill any empty locations in the hex file inside the application space with 0x3FFF .
 
-Connect at 115,200 / 8-N-1
+2- Connect at 115,200 / 8-N-1
 
-Optionally wait for a EBOOTx>> string to indicate bootloader entry.
-x indicates reason for bootload mode.
+3- Optionally wait for a EBOOTx>> string to indicate bootloader entry.  x indicates reason for bootload mode.
 
-This is sent once after reset if the bootloader stays in boot mode
+4- This is sent once after reset if the bootloader stays in boot mode
 
-Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download
-sequence.  If the bootloader does not respond with 'e' then send again
-until an 'e' follows.
+5- Send the sequence 0x52, 0xA3, 0x4D, 0xF6 to start the download sequence.  If the bootloader does not respond with 'e' then send again until an 'e' follows.
 
-The bootloader will Erase the entire Application Area.  In testing this
-took about 300mS.  Wait for a 'W' to be sent indicating the bootloader
-is ready to begin writing.
+The bootloader will Erase the entire Application Area.  In testing this took about 300mS.  
 
-send 64 bytes of data to be programmed, starting at address 0x140.
+6- Wait for a 'W' to be sent indicating the bootloader is ready to begin writing.
 
-wait for another 'W' response, and send the next 64 bytes.
-Continue this way until the entire application area is sent.
+7- Send 64 bytes of data to be programmed, starting at address 0x140.
 
-The bootloader will respond with a final 'W', then an 'R'
-indicating that the bootloader is now reading out flash.
+8- Wait for another 'W' response, and send the next 64 bytes.  Continue this way until the entire application area is sent.
 
-The bootloader will send the entire contents of the application
-flash area.  Verify this against the hex file to determine
-if programming was correct.
+The bootloader will respond with a final 'W', then an 'R' indicating that the bootloader is now reading out flash.
 
-Power cycle the micro to exit boot mode.
+The bootloader will send the entire contents of the application flash area.  
+
+9- Verify this against the hex file to determine if programming was correct.
+
+10- Power cycle the micro to exit boot mode.
 
 
 
@@ -99,18 +102,10 @@ Building a downloadable application:
 (A sample application can be found at 
 https://github.com/BroadwellConsultingInc/BootloaderPIC16F15214/tree/main/ApplicationPIC16F15214.X )
 
-In order to build an application that can be downloaded 
-with this bootloader, the application must be shifted 
-up 0x140 words.  
-This is done in MPLAB X v5.40 by choosing 
-project properties/XC8 global options / XC8 Global Options/
-XC8 Linker / Additional Options
-and putting 0x140 in the Codeoffset window
+In order to build an application that can be downloaded with this bootloader, the application must be shifted up 0x140 words.  
+This is done in MPLAB X v5.40 by choosing project properties/XC8 global options / XC8 Global Options/ XC8 Linker / Additional Options and putting 0x140 in the Codeoffset window.
 
-The final word of the application's flash must be 0x14B7
-This can be achieved by adding an assembly .s file that 
-contains the following (code also sets a stub reset vector 
-for IDE debugging):
+The final word of the application's flash must be 0x14B7 This can be achieved by adding an assembly .s file that contains the following (code also sets a stub reset vector for IDE debugging):
 \code{.unparsed}
 psect   loadCompleteMarker,local,class=CODE,abs ; PIC10/12/16
 
@@ -126,30 +121,13 @@ psect  resetstub,global,class=CODE,delta=2,abs
    GOTO 144h
 \endcode
 
-This area must be reserved by the linker, or it will override
-any code in this area.
- This is done in MPLAB X v5.40 by choosing 
-project properties/XC8 global options / XC8 Global Options/
-XC8 Linker / Memory Model
-and putting 
+This area must be reserved by the linker, or it will override any code in this area.  This is done in MPLAB X v5.40 by choosing project properties/XC8 global options / XC8 Global Options/ XC8 Linker / Memory Model and putting 
 -FFF-FFF
-in the "ROM ranges" box to remove that space from available 
-area for allocation.
+in the "ROM ranges" box to remove that space from available area for allocation.
 
-Before using this bootloader you should consider the device configuration
-settings in device_config.c  .  These are the settings that will be used
-for both the bootloader and application.  The application will NOT download
-new configuration byte settings.  For instance, if your application requires
-a permanently turned on watchdog, then the config bits (and this bootloader)
-will need to be modified.  
+Before using this bootloader you should consider the device configuration settings in device_config.c  .  These are the settings that will be used for both the bootloader and application.  The application will NOT download new configuration byte settings.  For instance, if your application requires a permanently turned on watchdog, then the config bits (and this bootloader) will need to be modified.  
 
-The built application now has no reset vector or interrupt vector at the
-address 0x0000 / 0x0004 in the micro.  This will make the code unusable
-if it is downloaded via a programmer/debugger
-rather than the bootloader, making
-debugging with an ICD or PicKit difficult.  To solve this problem
-stub vectors are added in the assembly snippet above which jump from
-the natural vector locations to the offset locations in the application.
+The built application now has no reset vector or interrupt vector at the address 0x0000 / 0x0004 in the micro.  This will make the code unusable if it is downloaded via a programmer/debugger rather than the bootloader, making debugging with an ICD or PicKit difficult.  To solve this problem stub vectors are added in the assembly snippet above which jump from the natural vector locations to the offset locations in the application.
 */
 
 
@@ -157,16 +135,24 @@ the natural vector locations to the offset locations in the application.
 #include <stdint.h>
 #include <stdbool.h>
 
+/// Write Size of a line of flash in words
 #define WRITE_FLASH_BLOCKSIZE    32
+/// ERASE Size of a line of flash in words
 #define ERASE_FLASH_BLOCKSIZE    32
+
+/// End address of flash programming area (exclusive)
 #define END_FLASH                0x1000
 
-//This needs to match the offset value in the linker settings for the application
-//project.
+/// The address (in words) in flash where the Application's reset vector will be placed.
 #define  NEW_RESET_VECTOR        0x140 
+
+/// The address (in words) in flash where the Application's interrupt handler or interrupt handler goto statement will be placed.
 #define  NEW_INTERRUPT_VECTOR    (NEW_RESET_VECTOR + 4)
 #define _str(x)  #x
 #define str(x)  _str(x)
+
+
+
 
 // The interrupt vector on a PIC16F is located at
 // address 0x0004. 
@@ -186,21 +172,32 @@ void EUSART1_Write(uint8_t txData);
 uint8_t Bootload_Required(void);
 void Run_Bootloader(void);
 
+/// \brief Global variable storing reason that the bootloader stayed in boot rather than jumping to the application
+/// 
+/// Valid values are:
+/// * 'L' -  The low byte of the flash end programming magic value was not correct 
+/// * 'H' -  The high byte of the flash end programming magic value was not correct 
+/// * 'F' -  The first byte of flash in application was not programmed to non-erased value
+/// * 'S' -  The Stack Overflow indicator is set (application request to stay in boot)
+/// * 'V' -  The system voltage was less than 2.2 volts, indicating an external request to stay in boot.
 uint8_t bootloadReason = 0;
 
 
+/// \brief Main Program
+/// The main program contains a flattening of a number of functions
+/// created for initialization inside SYSTEM_Initialize by the
+/// Microchip code configurator (MCC) tool.  The function calls were removed
+/// to save flash space since most functions simply assign values to 
+/// registers.  The original function name is commented out but left in to help
+/// line comparison software in the case that a comparison is done between this main
+/// and a new MCC generation.
+/// The Bootloader runs at 16MHz so that it can run down to 1.8V
 void main(void)
 {
 	CPCON = 0xC0;  // Turn on charge pump for low voltage analog operation.
 	// initialize the device
 
 
-	// The main program contains a flattening of a number of functions
-	// created for initialization inside SYSTEM_Initialize by the
-	// Microchip code configurator (MCC) tool.  The function calls were removed
-	// to save flash space since most functions simply assign values to 
-	// registers.  The original function name is commented out.
-	// The Bootloader runs at 16MHz so that it can run down to 1.8V
 	
 	// void SYSTEM_Initialize(void)
 	{
@@ -215,7 +212,7 @@ void main(void)
 			/**
 			  TRISx registers
 			  */
-			TRISA = 0x3B;
+			TRISA = 0x3F;
 
 			/**
 			  ANSELx registers
@@ -242,8 +239,7 @@ void main(void)
 			  */
 			INLVLA = 0x3F;
 
-			RX1PPS = 0x04;   //RA4->EUSART1:RX1;    
-			RA2PPS = 0x05;   //RA2->EUSART1:TX1;    
+			RX1PPS = 0x03;   //RA4->EUSART1:RX1;    
 		}
 		//void OSCILLATOR_Initialize(void)
 		{
@@ -305,10 +301,14 @@ void main(void)
 
 }
 
+/// An array of bytes that is treated like a FIFO by the code.  This array stores the last 4 bytes received and compares them to a magic value to enter the bootloader.
 uint8_t startBytes[4];
-void StartWrite();
+
+/// The bootloader programming executable.  This function is called if the Bootload_Required function indicates a bootload is required.
 void Run_Bootloader()
 { 
+	TRISA = 0x3B;   // Enable TX output
+	RA2PPS = 0x05;   //RA2->EUSART1:TX1;    
 	TX1REG = 'E'; // Indicate Bootloader Entry.  First transmit, so no need to delay.
     EUSART1_Write('B');
     EUSART1_Write('O');
@@ -401,14 +401,12 @@ void Run_Bootloader()
 
 }
 
-// Step 2:  Determine whether we should stay in the bootloader or jump to app
-// Jump to app will happen unless one of the following criteria is present:
-// *  The first location in App space is unprogrammed (0x3FFF)
-// *  The last location is App space is not the magic number 0x14B7
-// *  The last reset was caused by a hardware stack overflow (indication from
-//    App that we should stay in boot)
-// *  The voltage on Vdd is less than 2.2V across 2 samples 100ms Apart
-
+/// \brief  Determine whether we should stay in the bootloader or jump to app
+/// Jump to app will happen unless one of the following criteria is present:
+/// *  The first location in App space is unprogrammed (0x3FFF)
+/// *  The last location is App space is not the magic number 0x14B7
+/// *  The last reset was caused by a hardware stack overflow (indication from App that we should stay in boot)
+/// *  The voltage on Vdd is less than 2.2V across 2 samples 100ms Apart
 uint8_t Bootload_Required ()
 {
 
@@ -489,7 +487,7 @@ uint8_t Bootload_Required ()
 }
 
 
-// Unlock and start the write or erase sequence.
+/// Unlock and start the write or erase sequence.  See the PIC16F15214 datasheet.
 void StartWrite()
 {   
     asm ("movlw 0x55 " );
@@ -502,12 +500,14 @@ void StartWrite()
 }
 
 
+/// Wait until a byte is avaialble from the UART and return it.
 uint8_t EUSART1_Read(void)
 {
     while(!PIR1bits.RC1IF); // Delay until there's a byte available
     return RC1REG;
 }
 
+/// Wait until buffer space is avaialble in the UART and transmit a byte
 void EUSART1_Write(uint8_t txData)
 {
     while(0 == PIR1bits.TX1IF);  // Wait until the TXbuffer is empty.
